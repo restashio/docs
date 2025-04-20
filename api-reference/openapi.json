@@ -4,14 +4,16 @@
     "title": "OpenAPI Plant Store",
     "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
     "license": {
-      "name": "MIT"
+      "name": "AGPL-3.0 license",
+      "url": "https://www.gnu.org/licenses/agpl-3.0.html"
     },
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
-    }
+      "url": "https://api.restash.io",
+      "description": "Production API server"
+    },
   ],
   "security": [
     {
@@ -19,134 +21,45 @@
     }
   ],
   "paths": {
-    "/plants": {
+    "/v1/files/retrieve": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+        "description": "Returns file metadata for a given file.",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
+            "required": false,
+            "in": "query",
+            "description": "The ID of the file to retrieve. Must provide either key or id.",
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
+            }
+          },
+          {
+            "name": "key",
+            "required": false,
+            "in": "query",
+            "description": "The key of the file to retrieve. Must provide either key or id.",
+            "schema": {
+              "type": "string"
             }
           }
         ],
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "source": "import { Restash } from \"restash\";\n\nconst restash = new Restash(\"sk_123456789\");\n\nawait restash.files.retrieve({ id: \"file_id\" });"
+          }
+        ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+          "200": {
+            "description": "The file metadata",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/File"
                 }
               }
             }
-          }
-        }
-      }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
-        "requestBody": {
-          "description": "Plant added to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
           }
         }
       }
@@ -154,55 +67,158 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
+      "File": {
         "required": [
-          "name"
+          "file"
         ],
         "type": "object",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
+          "file": {
+            "required": ["id", "createdAt", "updatedAt", "key", "url", "size", "contentType"],
             "type": "object",
             "properties": {
               "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
+                "description": "The ID of the file",
+                "type": "string"
+              },
+              "createdAt": {
+                "description": "The date and time the file was created",
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "description": "The date and time the file was last updated",
+                "type": "string",
+                "format": "date-time"
+              },
+              "key": {
+                "description": "The key of the file. A human readable identifier for the file. You might have a file inside a folder, and the key would be the path to that file. For example `folder/file.txt`.",
+                "type": "string"
+              },
+              "url": {
+                "description": "The URL of the file. Can be used to access the file directly.",
+                "type": "string"
+              },
+              "size": {
+                "description": "The size of the file in bytes",
+                "type": "number",
                 "format": "int64"
+              },
+              "contentType": {
+                "description": "The content type of the file",
+                "type": "string"
               }
             }
           }
-        ]
+        }
       },
-      "Error": {
+      "Error400": {
         "required": [
-          "error",
-          "message"
+          "error"
         ],
         "type": "object",
         "properties": {
           "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "code": {
+                "description": "A short code indicating what went wrong.",
+                "type": "string",
+                "enum": ["bad_request"]
+              },
+              "message": {
+                "description": "A human readable message explaining what went wrong.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Error401": {
+        "required": [
+          "error"
+        ],
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "description": "A short code indicating what went wrong.",
+                "type": "string",
+                "enum": ["unauthorized"]
+              },
+              "message": {
+                "description": "A human readable message explaining what went wrong.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Error404": {
+        "required": [
+          "error"
+        ],
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "description": "A short code indicating what went wrong.",
+                "type": "string",
+                "enum": ["not_found"]
+              },
+              "message": {
+                "description": "A human readable message explaining what went wrong.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Error429": {
+        "required": [
+          "error"
+        ],
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "description": "A short code indicating what went wrong.",
+                "type": "string",
+                "enum": ["rate_limit_exceeded"]
+              },
+              "message": {
+                "description": "A human readable message explaining what went wrong.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Error500": {
+        "required": [
+          "error"
+        ],
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "description": "A short code indicating what went wrong.",
+                "type": "string",
+                "enum": ["internal_server_error"]
+              },
+              "message": {
+                "description": "A human readable message explaining what went wrong.",
+                "type": "string"
+              }
+            }
           }
         }
       }

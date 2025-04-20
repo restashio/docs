@@ -3,43 +3,43 @@
   <defs>
     <style>
       .cls-1 {
-      fill: #959596;
+        fill: #959596;
       }
 
       .cls-2 {
-      fill: #868686;
+        fill: #868686;
       }
 
       .cls-3 {
-      fill: #a5a5a5;
+        fill: #a5a5a5;
       }
 
       .cls-4 {
-      fill: url(#linear-gradient);
+        fill: url(#linear-gradient);
       }
 
       .cls-5 {
-      fill: #717172;
+        fill: #717172;
       }
 
       .cls-6 {
-      fill: #acacac;
+        fill: #acacac;
       }
 
       .cls-7 {
-      fill: #cbcbcb;
+        fill: #cbcbcb;
       }
 
       .cls-8 {
-      fill: #a4a4a4;
+        fill: #a4a4a4;
       }
 
       .cls-9 {
-      fill: #7e7e7f;
+        fill: #7e7e7f;
       }
 
       .cls-10 {
-      fill: #7b7b7b;
+        fill: #7b7b7b;
       }
     </style>
     <linearGradient id="linear-gradient" x1="645.62" y1="-57.61" x2="1025.97" y2="1308.83" gradientUnits="userSpaceOnUse">
