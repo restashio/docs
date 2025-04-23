@@ -1,0 +1,148 @@
+---
+title: Client uploads
+description: Learn how to upload files directly from the browser to Restash.
+---
+
+Easily upload files directly from the browser with Restash.
+This guide shows you how to set up client-side uploads using our lightweight SDK.
+
+## Prerequisites
+
+To follow this guide, you will need to:
+
+- [Create a Restash account](https://restash.io/register)
+- [Create an API key](https://restash.io/api-keys)
+
+## Install and initialize the Restash uploader
+
+<Steps>
+  <Step title="Install">
+    Install the Restash client SDK using your preferred package manager. Restash works with all Javascript front end
+    frameworks.
+    <CodeGroup>
+
+      ```bash npm
+      npm i @restash/client
+      ```
+
+      ```bash pnpm
+      pnpm i @restash/client
+      ```
+
+      ```bash yarn
+      yarn add @restash/client
+      ```
+
+      ```bash bun
+      bun add @restash/client
+      ```
+
+    </CodeGroup>
+
+  </Step>
+  <Step title="Initialize Restash uploader">
+    Initialize the uploader with your **public API key**
+
+    ```javascript lib/restash.ts
+    import { createRestashUploader } from "@restash/client";
+
+    export const upload = createRestashUploader({
+      publicKey: "pk_123456789"
+  });
+    ```
+
+  </Step>
+  <Step title="Use the uploader">
+    You can now import the uploader and use it to upload files.
+
+    ```javascript
+    import { upload } from "@/lib/restash";
+    ```
+
+  </Step>
+</Steps>
+
+## Uploading your first file
+
+In this example, we will upload a file in Next.js
+
+```typescript my-form.tsx
+"use client";
+
+import { upload } from "@/lib/restash";
+import type { UploadResult } from "@restash/client";
+import { useState, FormEvent } from "react";
+
+export const ImageUploader = () => {
+  const [newFile, setNewFile] = useState<UploadResult | null>(null);
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    if (!formData.has("file")) {
+      throw new Error("No file selected");
+    }
+
+    const file = formData.get("file") as File;
+
+    const uploadedFile = await upload(file);
+    setNewFile(uploadedFile);
+  };
+
+  return (
+    <>
+      <h1>Upload an image</h1>
+      <form onSubmit={onSubmit}>
+        <input name="file" type="file" required accept="image/*" />
+        <button type="submit">Upload</button>
+      </form>
+      {newFile && (
+        <img src={newFile.url} alt={newFile.name} />
+      )}
+    </>
+  );
+};
+```
+
+## Signed uploads
+
+Enabling signed uploads for your team ensures that only your server can authorize uploads by requiring a secure signature for each request. This prevents abuse and gives you full control over who can upload.
+
+## Implementing signed uploads
+
+<Steps>
+  <Step title="Require signed uploads for your team">
+    Navigate to your [team settings](https://restash.io/settings) page and enforce signatures.
+  </Step>
+  <Step title="Create an endpoint to generate signatures" >
+    Generate signatures using the `generateSig` function with your **secret key**.
+    ```typescript /api/restash/signature/route.ts
+    import { NextResponse } from "next/server";
+    import { generateSig } from "@restash/client";
+
+    export const GET = () => {
+      const secret = process.env.RESTASH_SECRET_KEY!;
+      const { signature, payload } = generateSig(secret);
+
+      return NextResponse.json({ signature, payload });
+    }
+    ```
+  </Step>
+  <Step title="Pass your endpoint the uploader">
+    Pass your route to `createRestashUploader`
+    ```typescript lib/restash.ts
+    import { createRestashUploader } from "@restash/client";
+
+    export const upload = createRestashUploader({
+      publicKey: "pk_123456789",
+      handleSignature: "/api/restash/signature"
+  });
+    ```
+  </Step>
+</Steps>
+
+## Next steps
+You're now ready to start uploading files with Restash!
+Check out the full [client SDK](/sdks/client-side) and explore advanced features like custom paths, upload progress tracking, and more.

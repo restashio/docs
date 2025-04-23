@@ -1,56 +1,63 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
-  "name": "Restash",
-  "icons": {
-    "library": "lucide"
-  },
+  "name": "Restash Docs",
   "colors": {
     "primary": "#000",
-    "light": "#fff",
-    "dark": "#000"
+    "dark": "#000",
+    "light": "#e5e7eb"
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "tabs": [
-
+    "anchors": [
       {
-        "tab": "API Reference",
-        "versions": [
-
+        "anchor": "Documentation",
+        "groups": [
           {
-            "version": "1.0.0",
-            "groups": [
+            "group": "Getting Started",
+            "pages": [
+              "introduction"
+            ]
+          },
+          {
+            "group": "Storage",
+            "pages": [
+              "/storage/introduction",
+              "/storage/organizing-files"
+            ]
+          },
+          {
+            "group": "Uploads",
+            "pages": [
+              "/uploads/introduction",
+              "/uploads/server-uploads",
+              "/uploads/client-uploads"
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "Using the SDKs",
+        "icon": "rectangle-terminal",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "/sdks/introduction",
+              "/sdks/api-keys",
+              "/sdks/rate-limits"
+            ]
+          },
+          {
+            "group": "SDKs",
+            "pages": [
               {
-                "group": "API Documentation",
+                "group": "Server-side SDKs",
                 "pages": [
-                  "api-reference/introduction",
-                  "api-reference/api-keys",
-                  "api-reference/rate-limits",
-                  "api-reference/errors"
+                  "/sdks/node"
                 ]
               },
-              {
-                "group": "Files",
-                "pages": [
-                  "api-reference/v1/files/upload-a-file",
-                  "api-reference/v1/files/retrieve-a-file",
-                  "api-reference/v1/files/delete-a-file"
-                ]
-              },
-              {
-                "group": "Client uploads",
-                "pages": [
-                  "api-reference/uploads/prepare-an-upload",
-                  "api-reference/uploads/confirm-an-upload"
-                ]
-              },
-              {
-                "group": "Signatures",
-                "pages": [
-                  "api-reference/signatures/request-a-signature"
-                ]
-              }
+              "/sdks/client-side"
             ]
           }
         ]

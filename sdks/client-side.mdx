@@ -1,0 +1,148 @@
+---
+title: Client-side SDK
+description: Learn how to integrate Restash into any frontend framework.
+---
+
+## Installation
+
+<CodeGroup>
+
+  ```bash npm
+  npm i @restash/client
+  ```
+
+  ```bash pnpm
+  pnpm i @restash/client
+  ```
+
+  ```bash yarn
+  yarn add @restash/client
+  ```
+
+  ```bash bun
+  bun add @restash/client
+  ```
+
+</CodeGroup>
+
+## Basic usage
+Here's a simple example of how to use the Restash client SDK to upload files directly from the browser.
+
+```typescript
+import { createRestashUploader } from "@restash/client";
+
+// create the uploader with your public API key
+const upload = createRestashUploader({
+  publicKey: "pk_123456789",
+});
+
+// can be a file or a blob
+const file = new File(["test"], "test.txt", {
+  type: "text/plain",
+});
+
+const result = await upload(file);
+
+console.log(result.url); // https://cdn.restash.io/{result.key}
+```
+
+For more usage examples, check out:
+- [Uploading your first file](/uploads/client-uploads#uploading-your-first-file)
+- [Signed uploads](/uploads/client-uploads#signed-uploads)
+
+## Creating the uploader
+The `createRestashUploader` function creates an uploader instance.
+```typescript lib/restash.ts
+import { createRestashUploader } from "@restash/client";
+
+export const upload = createRestashUploader({
+  publicKey: "pk_123456789",
+});
+```
+It accepts an options object with the following properties:
+
+<ParamField body="publicKey" type="string" required>
+  Your Restash public API key. This is required to authenticate the upload request.
+</ParamField>
+<ParamField body="handleSignature" type="string">
+  The URL of your server route that returns a signature and payload. Only required if your team has signature enforcement enabled. [Learn more](/uploads/client-uploads#signed-uploads).
+</ParamField>
+
+## Using the uploader
+You can import your uploader instance and use it to upload files.
+```typescript
+import { upload } from "@/lib/restash";
+
+const result = await upload(file, {
+  path: "uploads/",
+  onProgress: ({ percent }) => {
+    console.log(`uploading...${percent}%`);
+  },
+});
+```
+It accepts the following parameters:
+
+<ParamField body="file" type="File | Blob" required>
+  The file or blob to upload.
+</ParamField>
+<ParamField body="options" type="UploadOptions object">
+  An object with the following optional properties:
+  <Expandable title="properties">
+    <ParamField body="name" type="string">
+     A custom name for the file. This will override the original file name. If a blob is passed and no name is provided, we will generate a random name.
+    </ParamField>
+    <ParamField body="path" type="string">
+      Prefix the file name with a custom path. This is useful for organizing files in your Restash account. You can think of this as a folder structure.
+    </ParamField>
+    <ParamField body="onProgress" type="function">
+      A callback function that will be called with the progress of the upload. It receives an object with the following properties:
+      <Expandable title="properties">
+        <ParamField body="percent" type="number">
+          The progress of the upload as a percentage.
+        </ParamField>
+        <ParamField body="loaded" type="number">
+          The number of bytes uploaded so far.
+        </ParamField>
+        <ParamField body="total" type="number">
+          The total number of bytes to be uploaded.
+        </ParamField>
+      </Expandable>
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Generating signatures
+If your team has signature enforcement enabled, you need to generate a signature for each upload request. You can do this by creating a server route that returns a signature and payload
+using the `generateSig` function from the Restash client SDK. Generating signatures needs to be done on the server. You can then pass this route to the `createRestashUploader` so that it can be called when needed.
+
+ ```typescript /api/restash/signature/route.ts
+import { NextResponse } from "next/server";
+import { generateSig } from "@restash/client";
+
+export const GET = () => {
+  const secret = process.env.RESTASH_SECRET_KEY!;
+  const { signature, payload } = generateSig(secret);
+
+  return NextResponse.json({ signature, payload });
+}
+```
+It accepts the following parameters:
+<ParamField body="secret" type="string" required>
+  Your Restash secret API key. This is required to generate the signature.
+</ParamField>
+
+## Additional resources
+
+<CardGroup cols={2}>
+  <Card title="NPM package" icon="npm" href="https://www.npmjs.com/package/@restash/client">
+    Download and install the Restash client SDK from NPM
+  </Card>
+  <Card
+    title="Source code"
+    icon="github"
+    href="https://github.com/restashio/restash-client"
+  >
+    View the complete source code for the Restash client SDK
+  </Card>
+</CardGroup>
+
