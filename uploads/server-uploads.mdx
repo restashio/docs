@@ -1,0 +1,82 @@
+---
+title: Server uploads
+description: Learn how to upload files from your server to Restash.
+---
+
+Easily upload files from a Node.js server to Restash.
+This guide shows you how to set up server-side uploads using our lightweight SDK.
+
+<Note>
+  You can only upload files up to 4MB on the server. If you want to upload files larger than 4MB,
+  you can use the client side SDK to upload files directly from the browser.
+</Note>
+
+## Prerequisites
+
+To follow this guide, you will need to:
+
+- [Create a Restash account](https://restash.io/register)
+- [Create an API key](https://restash.io/api-keys)
+
+## Install and initialize Restash
+
+<Steps>
+  <Step title="Install">
+    Install Restash Node using your preferred package manager.
+    <CodeGroup>
+
+      ```bash npm
+      npm i @restash/node
+      ```
+
+      ```bash pnpm
+      pnpm i @restash/node
+      ```
+
+      ```bash yarn
+      yarn add @restash/node
+      ```
+    </CodeGroup>
+  </Step>
+  <Step title="Initialize Restash">
+    Initialize Restash with your **private API key**.
+
+    ```javascript lib/restash.ts
+    import { Restash } from "@restash/node";
+
+    export const restash = new Restash("sk_123456789");
+    ```
+  </Step>
+  <Step title="Use Restash anywhere in your server code">
+    You can now import Restash and use it to upload files.
+
+    ```javascript
+    import { restash } from "@/lib/restash";
+    ```
+
+  </Step>
+</Steps>
+
+## Uploading your first file on the server
+
+In this example, we will upload a file inside a Next.js API route.
+
+```typescript api/upload/route.ts
+import { NextResponse, NextRequest } from "next/server";
+import { restash } from "@/lib/restash";
+
+export const POST = async (req: NextRequest) => {
+  const formData = await req.formData();
+  const file = formData.get("file") as File;
+
+  const upload = await restash.files.upload(file);
+
+  // store the upload in your db or do something else with it
+  console.log(upload.url);
+
+  return NextResponse.json(upload);
+};
+```
+
+## Next steps
+Check out the full [Node.js SDK](/sdks/node) for more information on how to use the SDK.

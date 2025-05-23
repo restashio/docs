@@ -1,0 +1,48 @@
+---
+title: API Keys
+description: Learn how API keys work on Restash.
+---
+
+API keys on Restash allow you to access your account and perform actions on your behalf. They are used to authenticate requests made to the Restash API. You can create multiple API keys for different purposes, such as development, production, or testing.
+
+API keys on Restash are divided into two types:
+
+## Public API keys
+Public API keys can only be used to upload files from your browser. Most of the time they will be used alongside a private key. Public keys follow the format:
+
+```bash .env
+RESTASH_PUBLIC_KEY=pk_xxxxxxxxx
+```
+
+### Whitelist domains
+For a public key to work, you must also set your allowed origins on that key. This is just a list of domains that are allowed to use your public key. You can set this in the Restash dashboard.
+
+## Private API keys
+Private API keys can be used to perform any action on your account such as uploading, retrieving, and deleting files. They are used to authenticate requests made to the Restash API from the server. Private keys follow the format:
+
+```bash .env
+RESTASH_SECRET_KEY=sk_xxxxxxxxx
+```
+
+## Create an API key
+  <Steps>
+    <Step title="Go to Restash dashboard">
+      Go to [API keys](https://restash.io/api-keys) in the Restash dashboard.
+      <Frame>
+        <img src="/images/api-keys.png" alt="Restash API keys" />
+      </Frame>
+    </Step>
+    <Step title="Create an API key">
+      Click on the **Create API key** button. A popup will open prompting you to enter a name for your key. You can also add the allowed origins if needed.
+  <Frame>
+    <img src="/images/create-api-key.png" alt="Restash create API key" />
+  </Frame>
+    </Step>
+    <Step title="Use your API key">
+      You can now use your newly created API key to access your account's resources programatically via our SDKs.
+      ```typescript
+      new Restash(process.env.RESTASH_SECRET_KEY);
+      ```
+    </Step>
+  </Steps>
+

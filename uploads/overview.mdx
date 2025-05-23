@@ -1,0 +1,30 @@
+---
+title: Overview
+description: Learn the fundamental concepts for uploading files to Restash.
+---
+
+Uploading files to Restash is a simple process. We offer two different ways of uploading files at the moment:
+
+## Client uploads
+Client uploads are the most common way to upload files to Restash. This method is used when you want to upload files directly from the browser. This method is suitable for just about all use cases, such as uploading images, videos, and other files. This method must be used when uploading files over 4MB.
+
+## Server uploads
+Server uploads are not as commonly used compared to client uploads. Server uploads are more suitable for smaller files, as you won't be able to track the upload progress.
+<Note>
+  You can only upload files up to 4MB on the server. If you want to upload files larger than 4MB,
+  you can use the client side SDK to upload files directly from the browser.
+</Note>
+
+## Start uploading
+<CardGroup cols={2}>
+  <Card title="Client uploads" icon="globe" href="/uploads/client-uploads">
+    Download and install the Restash Node.js SDK from NPM
+  </Card>
+  <Card
+    title="Server uploads"
+    icon="server"
+    href="/uploads/server-uploads"
+  >
+    View the complete source code for the Restash Node.js SDK
+  </Card>
+</CardGroup>

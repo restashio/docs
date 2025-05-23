@@ -20,16 +20,9 @@
             ]
           },
           {
-            "group": "Storage",
-            "pages": [
-              "/storage/introduction",
-              "/storage/organizing-files"
-            ]
-          },
-          {
             "group": "Uploads",
             "pages": [
-              "/uploads/introduction",
+              "/uploads/overview",
               "/uploads/server-uploads",
               "/uploads/client-uploads"
             ]
@@ -41,16 +34,10 @@
         "icon": "rectangle-terminal",
         "groups": [
           {
-            "group": "Overview",
-            "pages": [
-              "/sdks/introduction",
-              "/sdks/api-keys",
-              "/sdks/rate-limits"
-            ]
-          },
-          {
             "group": "SDKs",
             "pages": [
+              "/sdks/overview",
+              "/sdks/api-keys",
               {
                 "group": "Server-side SDKs",
                 "pages": [

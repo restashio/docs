@@ -1,0 +1,192 @@
+---
+title: Node.js
+description: Learn how to use the Restash Node.js SDK.
+---
+
+## Installation
+
+<CodeGroup>
+
+  ```bash npm
+  npm i @restash/node
+  ```
+
+  ```bash pnpm
+  pnpm i @restash/node
+  ```
+
+  ```bash yarn
+  yarn add @restash/node
+  ```
+
+</CodeGroup>
+
+## Initialize Restash
+
+```typescript lib/restash.ts
+import { Restash } from "@restash/node";
+
+export const restash = new Restash(process.env.RESTASH_SECRET_KEY);
+```
+
+The `Restash` class accepts a single parameter, which is your private API key. You can create an API key [here](https://restash.io/api-keys).
+
+## Upload a file
+
+```typescript
+import { restash } from "@/lib/restash";
+
+const file = new File(["test"], "test.txt", {
+  type: "text/plain",
+});
+
+const result = await restash.files.upload(file);
+
+// do something with the uploaded file
+const { url } = result;
+```
+
+The upload method accepts the following parameters:
+
+<ParamField body="file" type="File | Blob" required>
+  The file or blob to upload.
+</ParamField>
+<ParamField body="options" type="UploadOptions object">
+  An object with the following optional properties:
+  <Expandable title="properties">
+    <ParamField body="name" type="string">
+      A custom name for the file. This will override the original file name. If a blob is passed and no name is provided, we will generate a random name.
+    </ParamField>
+    <ParamField body="path" type="string">
+      Prefix the file name with a custom path. This is useful for organizing files in your Restash account. You can think of this as a folder structure.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+A successful upload will respond with the following:
+
+
+<ParamField body="data" type="UploadFileResponseSuccess object">
+  The metadata of the uploaded file.
+  <Expandable title="properties">
+    <ParamField body="id" type="string">
+      The unique identifier of the uploaded file.
+    </ParamField>
+    <ParamField body="name" type="string">
+      The name of the uploaded file.
+    </ParamField>
+    <ParamField body="url" type="string">
+      The URL of the uploaded file.
+    </ParamField>
+    <ParamField body="size" type="number">
+      The size of the uploaded file in bytes.
+    </ParamField>
+    <ParamField body="contentType" type="string">
+      The content type of the uploaded file.
+    </ParamField>
+    <ParamField body="key" type="string">
+      The unique key of the uploaded file.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+
+## Retrieve a file
+
+```typescript
+import { restash } from "@/lib/restash";
+
+// can be a file id or key
+const file = await restash.files.retrieve({ id: "file-id" });
+```
+
+The retrieve method accepts the following parameters:
+
+  <ParamField body="options" type="RetrieveFileOptions object">
+    An object with the following properties, either id or key is required:
+    <Expandable title="properties">
+      <ParamField body="id" type="string">
+        The unique identifier of the file.
+      </ParamField>
+      <ParamField body="key" type="string">
+        The unique key of the file.
+      </ParamField>
+    </Expandable>
+  </ParamField>
+
+A successful retrieval will respond with the following:
+
+<ParamField body="data" type="RetrieveFileResponseSuccess object">
+  The metadata of the uploaded file.
+  <Expandable title="properties">
+    <ParamField body="id" type="string">
+      The unique identifier of the uploaded file.
+    </ParamField>
+    <ParamField body="name" type="string">
+      The name of the uploaded file.
+    </ParamField>
+    <ParamField body="url" type="string">
+      The URL of the uploaded file.
+    </ParamField>
+    <ParamField body="size" type="number">
+      The size of the uploaded file in bytes.
+    </ParamField>
+    <ParamField body="contentType" type="string">
+      The content type of the uploaded file.
+    </ParamField>
+    <ParamField body="key" type="string">
+      The unique key of the uploaded file.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Delete a file
+
+```typescript
+import { restash } from "@/lib/restash";
+
+const result = await restash.files.delete("file-id");
+```
+
+The delete method accepts the following parameters:
+
+<ParamField body="options" type="DeleteFileOptions object">
+  An object with the following properties, either id or key is required:
+  <Expandable title="properties">
+    <ParamField body="id" type="string">
+      The unique identifier of the file.
+    </ParamField>
+    <ParamField body="key" type="string">
+      The unique key of the file.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+A successful deletion will respond with the following:
+
+<ParamField body="data" type="DeleteFileResponseSuccess object">
+  A confirmation of the deletion.
+  <Expandable title="properties">
+    <ParamField body="deleted" type="boolean">
+      A boolean indicating if the file was deleted successfully.
+    </ParamField>
+    <ParamField body="file" type="string">
+      The unique identifier of the file.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Additional resources
+
+<CardGroup cols={2}>
+  <Card title="NPM package" icon="npm" href="https://www.npmjs.com/package/@restash/node">
+    Download and install the Restash Node.js SDK from NPM
+  </Card>
+  <Card
+    title="Source code"
+    icon="github"
+    href="https://github.com/restashio/restash-node"
+  >
+    View the complete source code for the Restash Node.js SDK
+  </Card>
+</CardGroup>
