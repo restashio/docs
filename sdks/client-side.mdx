@@ -8,15 +8,15 @@ description: Learn how to integrate Restash into any frontend framework.
 <CodeGroup>
 
   ```bash npm
-  npm i @restash/client
+  npm i @restash/restash-js
   ```
 
   ```bash pnpm
-  pnpm i @restash/client
+  pnpm i @restash/restash-js
   ```
 
   ```bash yarn
-  yarn add @restash/client
+  yarn add @restash/restash-js
 ```
 
 </CodeGroup>
@@ -25,7 +25,7 @@ description: Learn how to integrate Restash into any frontend framework.
 Here's a simple example of how to use the Restash client SDK to upload files directly from the browser.
 
 ```typescript
-import { createRestashUploader } from "@restash/client";
+import { createRestashUploader } from "@restash/restash-js";
 
 // create the uploader with your public API key
 const upload = createRestashUploader({
@@ -49,7 +49,7 @@ For more usage examples, check out:
 ## Creating the uploader
 The `createRestashUploader` function creates an uploader instance.
 ```typescript lib/restash.ts
-import { createRestashUploader } from "@restash/client";
+import { createRestashUploader } from "@restash/restash-js";
 
 export const upload = createRestashUploader({
   publicKey: "pk_123456789",
@@ -90,6 +90,9 @@ It accepts the following parameters:
     <ParamField body="path" type="string">
       Prefix the file name with a custom path. This is useful for organizing files in your Restash account. You can think of this as a folder structure.
     </ParamField>
+    <ParamField body="metadata" type="object">
+      Key-value pairs of metadata associated with the file. This can be used to store additional information about the file.
+    </ParamField>
     <ParamField body="onProgress" type="function">
       A callback function that will be called with the progress of the upload. It receives an object with the following properties:
       <Expandable title="properties">
@@ -107,13 +110,42 @@ It accepts the following parameters:
   </Expandable>
 </ParamField>
 
+A successful upload will respond with the following:
+
+<ParamField body="data" type="UploadResult object">
+  The information about the uploaded file.
+  <Expandable title="properties">
+    <ParamField body="id" type="string">
+      The unique identifier of the uploaded file.
+    </ParamField>
+    <ParamField body="name" type="string">
+      The name of the uploaded file.
+    </ParamField>
+    <ParamField body="url" type="string">
+      The URL of the uploaded file.
+    </ParamField>
+    <ParamField body="size" type="number">
+      The size of the uploaded file in bytes.
+    </ParamField>
+    <ParamField body="contentType" type="string">
+      The content type of the uploaded file.
+    </ParamField>
+    <ParamField body="key" type="string">
+      The unique key of the uploaded file.
+    </ParamField>
+    <ParamField body="metadata" type="object | null">
+      Key-value pairs of metadata associated with the file.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
 ## Generating signatures
 If your team has signature enforcement enabled, you need to generate a signature for each upload request. You can do this by creating a server route that returns a signature and payload
 using the `generateSig` function from the Restash client SDK. Generating signatures needs to be done on the server. You can then pass this route to the `createRestashUploader` so that it can be called when needed.
 
  ```typescript /api/restash/signature/route.ts
 import { NextResponse } from "next/server";
-import { generateSig } from "@restash/client";
+import { generateSig } from "@restash/restash-js";
 
 export const GET = () => {
   const secret = process.env.RESTASH_SECRET_KEY!;
@@ -130,13 +162,13 @@ It accepts the following parameters:
 ## Additional resources
 
 <CardGroup cols={2}>
-  <Card title="NPM package" icon="npm" href="https://www.npmjs.com/package/@restash/client">
-    Download and install the Restash client SDK from NPM
+  <Card title="NPM package" icon="npm" href="https://www.npmjs.com/package/@restash/restash-js">
+    Download and install the Restash js client SDK from NPM
   </Card>
   <Card
     title="Source code"
     icon="github"
-    href="https://github.com/restashio/restash-client"
+    href="https://github.com/restashio/restash-js"
   >
     View the complete source code for the Restash client SDK
   </Card>

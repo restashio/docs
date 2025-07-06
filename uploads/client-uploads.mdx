@@ -17,20 +17,20 @@ To follow this guide, you will need to:
 
 <Steps>
   <Step title="Install">
-    Install the Restash client SDK using your preferred package manager. Restash works with all Javascript front end
+    Install the Restash JS client SDK using your preferred package manager. Restash works with all Javascript front end
     frameworks.
     <CodeGroup>
 
       ```bash npm
-      npm i @restash/client
+      npm i @restash/restash-js
       ```
 
       ```bash pnpm
-      pnpm i @restash/client
+      pnpm i @restash/restash-js
       ```
 
       ```bash yarn
-      yarn add @restash/client
+      yarn add @restash/restash-js
       ```
 
     </CodeGroup>
@@ -40,7 +40,7 @@ To follow this guide, you will need to:
     Initialize the uploader with your **public API key**
 
     ```javascript lib/restash.ts
-    import { createRestashUploader } from "@restash/client";
+    import { createRestashUploader } from "@restash/restash-js";
 
     export const upload = createRestashUploader({
       publicKey: "pk_123456789"
@@ -66,7 +66,7 @@ In this example, we will upload a file in Next.js
 "use client";
 
 import { upload } from "@/lib/restash";
-import type { UploadResult } from "@restash/client";
+import type { UploadResult } from "@restash/restash-js";
 import { useState, FormEvent } from "react";
 
 export const ImageUploader = () => {
@@ -116,7 +116,7 @@ Enabling signed uploads for your team ensures that only your server can authoriz
     Generate signatures using the `generateSig` function with your **secret key**.
     ```typescript /api/restash/signature/route.ts
     import { NextResponse } from "next/server";
-    import { generateSig } from "@restash/client";
+    import { generateSig } from "@restash/restash-js";
 
     export const GET = () => {
       const secret = process.env.RESTASH_SECRET_KEY!;
@@ -129,7 +129,7 @@ Enabling signed uploads for your team ensures that only your server can authoriz
   <Step title="Pass your endpoint the uploader">
     Pass your route to `createRestashUploader`
     ```typescript lib/restash.ts
-    import { createRestashUploader } from "@restash/client";
+    import { createRestashUploader } from "@restash/restash-js";
 
     export const upload = createRestashUploader({
       publicKey: "pk_123456789",
